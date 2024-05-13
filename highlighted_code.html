@@ -5,15 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resaltado de sintaxis en Python</title>
     <style>
-        .keyword { color: blue; }
-        .number { color: orange; }
-        .string { color: green; }
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+        * {background-color: rgb(41, 38, 46); font-family: "JetBrains Mono", monospace; color: white;}
+        .keyword { color: rgb(212, 93, 93); }
+        .number { color: rgb(235, 122, 255); }
+        .stringS { color: rgb(255, 251, 0); }
+        .stringD { color: rgb(255, 251, 0); }
         .comment { color: gray; }
-        .identifier { color: black; }
-        .operator { color: purple; }
+        .identifier { color: rgb(255, 255, 255); }
+        .operator { color: rgb(212, 93, 93); }
+        .variable {color: #6f35f8;}
+        .function {color: #00ff62;}
     </style>
 </head>
 <body>
-    <pre><span class="operator"></span>span class<span class="operator">=</span>"identifier"<span class="operator">></span>print<span class="operator"><</span><span class="operator">/</span>span<span class="operator"></span></pre>
+    <pre><span class="comment"># Año Bisiesto</span>
+<span class="comment">#Erick Segura Sánchez</span>
+
+<span class="keyword">def</span> es_bisiesto<span class="operator">(</span>an<span class="operator">)</span>:
+    <span class="keyword">if</span> <span class="operator">(</span><span class="operator">(</span>an<span class="operator">%</span><span class="number">4</span><span class="operator">=</span><span class="operator">=</span><span class="number">0</span> <span class="keyword">and</span> an<span class="operator">%</span><span class="number">100</span>!<span class="operator">=</span><span class="number">0</span><span class="operator">)</span> <span class="keyword">or</span> an<span class="operator">%</span><span class="number">400</span><span class="operator">=</span><span class="operator">=</span><span class="number">0</span><span class="operator">)</span>:
+        print<span class="operator">(</span><span class="stringS">"Si es año bisiesto"</span><span class="operator">)</span>
+    
+    <span class="keyword">else</span>:
+        print<span class="operator">(</span><span class="stringD">'No es año bisiesto'</span><span class="operator">)</span>    
+
+<span class="keyword">def</span> <span class="function">main()</span>:
+    an<span class="operator">=</span><span class="variable">int</span><span class="operator">(</span>input<span class="operator">(</span><span class="stringD">'Escribe tu año: '</span><span class="operator">)</span><span class="operator">)</span>
+    es_bisiesto<span class="operator">(</span>an<span class="operator">)</span>
+<span class="function">main()</span>
+    
+</pre>
 </body>
 </html>
