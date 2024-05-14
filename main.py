@@ -1,23 +1,25 @@
+import time
 import re
 import keyword
+
+inicio = time.time()
+
 
 reserved_words = keyword.kwlist
 variables = ['float', 'int', 'double', 'string']
 
-
 tokens_regex = [
-
+    (r'\b(?:{})\b'.format('|'.join(variables)), 'variable'),  # Variables
+    (r'\b\w+\(', 'function'),  # Funciones sin argumentos
     (r'"[^"\n]*"', 'stringS'),
     (r"'[^'\n]*'", 'stringD'),
     (r'\b(?:{})\b'.format('|'.join(reserved_words)), 'keyword'),  # Palabras clave
-    (r'\b\d+\b', 'number'),  # Números
-    (r'#[^\n]*', 'comment'),  # Comentarios
-    (r'[+\-*/%<>=&|^~()]', 'operator'),  # Operadores
-    (r'\b(?:{})\b'.format('|'.join(variables)), 'variable'),  # Variables
-    (r'\b\w+\(\)', 'function'),  # Funciones sin argumentos
-
+    (r'\b\d+(\.\d*)?([eE][+-]?\d+)?\b', 'number'),  # Números
+    (r'#.*?$', 'comment'),  # Comentarios de una sola línea
+    (r'[+\-*/%<>=&|^~(){}]', 'operator'),  # Operadores
 ]
-# Función para resaltar los tokens en HTML+CSS
+
+
 # Función para resaltar los tokens en HTML+CSS
 def highlight_tokens(code):
     # Inicializamos el código resaltado como una cadena vacía
@@ -36,8 +38,14 @@ def highlight_tokens(code):
         for token_regex, token_class in tokens_regex:
             if re.match(token_regex, token):
                 # Aplicamos la clase correspondiente al token
+                if (token_class == 'function'):
+                    highlighted_code += f'<span class="{token_class}">{token[:-1]}</span>'
+                    highlighted_code += f'<span class="operator">(</span>'
+                    break
+
                 highlighted_code += f'<span class="{token_class}">{token}</span>'
                 break
+            
         # Actualizamos el índice de inicio del próximo token
         start_index = token_end
     # Agregamos el texto no resaltado que sigue al último token
@@ -65,6 +73,7 @@ html_code = f"""<!DOCTYPE html>
         .keyword {{ color: rgb(212, 93, 93); }}
         .number {{ color: rgb(235, 122, 255); }}
         .stringS {{ color: rgb(255, 251, 0); }}
+        .stringM {{ color: rgb(255, 251, 0); }}
         .stringD {{ color: rgb(255, 251, 0); }}
         .comment {{ color: gray; }}
         .identifier {{ color: rgb(255, 255, 255); }}
@@ -81,3 +90,7 @@ html_code = f"""<!DOCTYPE html>
 # Escribe el código HTML en un archivo
 with open("highlighted_code.html", "w") as file:
     file.write(html_code)
+
+fin = time.time()
+
+print(f"Tiempo de ejecución: {(fin-inicio):.6f} segundos")
