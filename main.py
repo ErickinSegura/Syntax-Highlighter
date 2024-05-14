@@ -6,7 +6,7 @@ inicio = time.time()
 
 
 reserved_words = keyword.kwlist
-variables = ['float', 'int', 'double', 'string']
+variables = ['float', 'int', 'double', 'string', 'f']
 
 tokens_regex = [
     (r'\b(?:{})\b'.format('|'.join(variables)), 'variable'),  # Variables
@@ -15,8 +15,8 @@ tokens_regex = [
     (r"'[^'\n]*'", 'stringD'),
     (r'\b(?:{})\b'.format('|'.join(reserved_words)), 'keyword'),  # Palabras clave
     (r'\b\d+(\.\d*)?([eE][+-]?\d+)?\b', 'number'),  # Números
-    (r'#.*?$', 'comment'),  # Comentarios de una sola línea
-    (r'[+\-*/%<>=&|^~(){}]', 'operator'),  # Operadores
+    (r'#[^\n]*', 'comment'),  # Comentarios
+    (r'[+\-*/%<>=&|^~()\[\]{}]', 'operator'),  # Operadores
 ]
 
 
@@ -69,17 +69,17 @@ html_code = f"""<!DOCTYPE html>
     <title>Resaltado de sintaxis en Python</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
-        * {{background-color: rgb(41, 38, 46); font-family: "JetBrains Mono", monospace; color: white;}}
-        .keyword {{ color: rgb(212, 93, 93); }}
-        .number {{ color: rgb(235, 122, 255); }}
-        .stringS {{ color: rgb(255, 251, 0); }}
-        .stringM {{ color: rgb(255, 251, 0); }}
-        .stringD {{ color: rgb(255, 251, 0); }}
-        .comment {{ color: gray; }}
+        * {{background-color: rgb(30, 30, 46); font-family: "JetBrains Mono", monospace; color: white;}}
+        .keyword {{ color: rgb(243, 139, 168); }}
+        .number {{ color: rgb(203, 166, 247); }}
+        .stringS {{ color: rgb(249, 226, 175); }}
+        .stringM {{ color: rgb(249, 226, 175); }}
+        .stringD {{ color: rgb(249, 226, 175); }}
+        .comment {{ color: rgb(166, 173, 200); }}
         .identifier {{ color: rgb(255, 255, 255); }}
-        .operator {{ color: rgb(212, 93, 93); }}
-        .variable {{color: #6f35f8;}}
-        .function {{color: #00ff62;}}
+        .operator {{ color: rgb(243, 139, 168); }}
+        .variable {{color: rgb(137, 180, 250);}}
+        .function {{color: rgb(166, 227, 161);}}
     </style>
 </head>
 <body>

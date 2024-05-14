@@ -1,96 +1,132 @@
-import time
-import re
-import keyword
+d = [
+        {'letra': 5, 'digito': 1, 'simbolo': 8, 'comentario': 6, '_': 9, '.': 2, 'E': 5, "espacio": 9},  # Estado 0   0       Entrada
+        {'letra': 9, 'digito': 1, 'simbolo': 9, 'comentario': 6, '_': 9, '.': 2, 'E': 9, "espacio": 9},  # Estado N1         1       Entero
+        {'letra': 9, 'digito': 2, 'simbolo': 9, 'comentario': 6, '_': 9, '.': 9, 'E': 3, "espacio": 9},  # Estado N2         2       Real
+        {'letra': 9, 'digito': 4, 'simbolo': 10, 'comentario': 6, '_': 9, '.': 9, 'E': 9, "espacio": 9},  # Estado N3         3
+        {'letra': 9, 'digito': 4, 'simbolo': 9, 'comentario': 6, '_': 9, '.': 9, 'E': 9, "espacio": 9},  # Estado N4         4       Real
+        {'letra': 5, 'digito': 5, 'simbolo': 9, 'comentario': 6, '_': 5, '.': 9, 'E': 5, "espacio": 9},  # Estado V1         5       Variable
+        {'letra': 9, 'digito': 9, 'simbolo': 9, 'comentario': 7, '_': 9, '.': 9, 'E': 9, "espacio": 9},  # Estado C1         6       Division
+        {'letra': 7, 'digito': 7, 'simbolo': 7, 'comentario': 7, '_': 7, '.': 7, 'E': 7, "espacio": 7},  # Estado C2         7       Comentario
+        {'letra': 9, 'digito': 9, 'simbolo': 9, 'comentario': 6, '_': 9, '.': 9, 'E': 9, "espacio": 9},  # Estado S1         8       Simbolo
+        {'letra': 9, 'digito': 9, 'simbolo': 9, 'comentario': 9, '_': 9, '.': 9, 'E': 9, "espacio": 9},  # Estado Null       9
+        {'letra': 9, 'digito': 10, 'simbolo': 9, 'comentario': 6, '_': 9, '.': 9, 'E': 9, "espacio": 9},  # Estado real       10      Real
+        ]
 
-inicio = time.time()
-
-
-reserved_words = keyword.kwlist
-variables = ['float', 'int', 'double', 'string']
-
-tokens_regex = [
-    (r'\b(?:{})\b'.format('|'.join(variables)), 'variable'),  # Variables
-    (r'\b\w+\(', 'function'),  # Funciones sin argumentos
-    (r'"[^"\n]*"', 'stringS'),
-    (r"'[^'\n]*'", 'stringD'),
-    (r"""'[^'\n]*'""", 'stringM'),
-    (r'\b(?:{})\b'.format('|'.join(reserved_words)), 'keyword'),  # Palabras clave
-    (r'\b\d+(\.\d*)?([eE][+-]?\d+)?\b', 'number'),  # Números
-    (r'#[^\n]*', 'comment'),  # Comentarios
-    (r'[+\-*/%<>=&|^~(){}]', 'operator'),  # Operadores
-]
-
-# Función para resaltar los tokens en HTML+CSS
-def highlight_tokens(code):
-    # Inicializamos el código resaltado como una cadena vacía
-    highlighted_code = ''
-    # Inicializamos el índice de inicio del próximo token
-    start_index = 0
-    # Buscamos coincidencias con todas las expresiones regulares en tokens_regex
-    for match in re.finditer('|'.join(f'({pattern})' for pattern, _ in tokens_regex), code):
-        # Extraemos el token y su posición en el código
-        token = match.group(0)
-        token_start = match.start()
-        token_end = match.end()
-        # Agregamos el texto no resaltado que precede al token
-        highlighted_code += code[start_index:token_start]
-        # Buscamos la clase correspondiente al token en tokens_regex
-        for token_regex, token_class in tokens_regex:
-            if re.match(token_regex, token):
-                # Aplicamos la clase correspondiente al token
-                if (token_class == 'function'):
-                    highlighted_code += f'<span class="{token_class}">{token[:-1]}</span>'
-                    highlighted_code += f'<span class="operator">(</span>'
-                    break
-
-                highlighted_code += f'<span class="{token_class}">{token}</span>'
-                break
-            
-        # Actualizamos el índice de inicio del próximo token
-        start_index = token_end
-    # Agregamos el texto no resaltado que sigue al último token
-    highlighted_code += code[start_index:]
-    return highlighted_code
+alfabeto = {
+    'letra': 'abcdfghijklmnñopqrstuvwxyzABCDFGHIJKLMNÑOPQRSTUVWXYZ',
+    'digito': '0123456789',
+    'simbolo': '+-*=()^%',
+    'comentario': '//',
+    '_': '_',
+    '.': '.',
+    'E': 'Ee',
+    'espacio': ' ',
+}
 
 
-# Lee el archivo fuente
-with open("fuente.py", "r") as file:
-    source_code = file.read()
+dict_estado = {
+    0: 'Entrada',
+    1: 'Entero',
+    2: 'Real',
+    3: 'Real',
+    4: 'Real',
+    5: 'Variable',
+    6: 'Division',
+    7: 'Comentario',
+    8: 'Simbolo',
+    9: 'Nulo',
+    10: 'Real'
+}
 
-# Resalta los tokens en HTML+CSS
-highlighted_code = highlight_tokens(source_code)
 
-# Genera el código HTML completo
-html_code = f"""<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resaltado de sintaxis en Python</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
-        * {{background-color: rgb(41, 38, 46); font-family: "JetBrains Mono", monospace; color: white;}}
-        .keyword {{ color: rgb(212, 93, 93); }}
-        .number {{ color: rgb(235, 122, 255); }}
-        .stringS {{ color: rgb(255, 251, 0); }}
-        .stringM {{ color: rgb(255, 251, 0); }}
-        .stringD {{ color: rgb(255, 251, 0); }}
-        .comment {{ color: gray; }}
-        .identifier {{ color: rgb(255, 255, 255); }}
-        .operator {{ color: rgb(212, 93, 93); }}
-        .variable {{color: #6f35f8;}}
-        .function {{color: #00ff62;}}
-    </style>
-</head>
-<body>
-    <pre>{highlighted_code}</pre>
-</body>
-</html>"""
+dict_simbolo = {
+    '+': 'Suma',
+    '-': 'Resta',
+    '*': 'Multiplicacion',
+    '=': 'Asignacion',
+    '(': 'Parentesis que abre',
+    ')': 'Parentesis que cierra',
+    '^': 'Potencia',
+    '%': 'Porcentaje'
+}
 
-# Escribe el código HTML en un archivo
-with open("highlighted_code.html", "w") as file:
-    file.write(html_code)
+# Función para obtener el estado de un token en el autómata
+def dame_estado(token, prev_estado=0):
+  # Busca el token en el alfabeto y devuelve el estado correspondiente
+  for categoria, conjunto_caracteres in alfabeto.items():
+      if token in conjunto_caracteres:
+          llave = categoria
+          return d[prev_estado][llave]
 
-fin = time.time()
+  # Imprime un mensaje si el token no se encuentra en el alfabeto
+  print(f"{token}\tNulo")
 
-print(f"Tiempo de ejecución: {(fin-inicio):.6f} segundos")
+# Función para verificar si un estado representa un dígito
+def isDigit(prev_estado, estado):
+  # Verifica si el estado actual o el estado previo corresponden a un número real
+  if (prev_estado==1) and (dict_estado[estado] == 'Real'):
+    return True
+  if (estado==1) and (dict_estado[prev_estado]=='Real'):
+    return True
+  return False
+
+# Función para ejecutar el autómata en una línea de texto
+def correr_automaton(line):
+  palabra = ''
+  prev_estado = 0
+  estado = None
+  # Itera sobre cada token en la línea
+  for token in line:
+    estado = dame_estado(token, prev_estado)
+    if estado == 9:
+      estado = dame_estado(token)
+
+    # Concatena caracteres si el estado no cambia o si el estado anterior es 0
+    if (prev_estado == 0) or (dict_estado[estado] == dict_estado[prev_estado]):
+      palabra += token
+      prev_estado = estado
+    elif estado != 9:
+      # Maneja casos específicos de transición de estado
+      if prev_estado == 6 and estado == 7:
+        palabra += token
+        prev_estado = 7
+        continue
+      if prev_estado == 8:
+        for char in palabra:
+          if char != '-':
+             print(f"{char}\t{dict_simbolo[char]}")
+             continue
+        if palabra[-1] == '-':
+          if dict_estado[estado] == 'Real' or dict_estado[estado] == 'Entero':
+            palabra = '-' + token
+            prev_estado = 4
+          else:
+            print(f"{palabra[-1]}\t{dict_simbolo[palabra[-1]]}")
+            palabra = token
+            prev_estado = estado
+          continue
+      elif isDigit(prev_estado, estado):
+        prev_estado = 2
+        palabra += token
+        continue
+      else:
+        print(f"{palabra}\t{dict_estado[prev_estado]}")
+      palabra = token
+      prev_estado = estado
+
+  # Imprime el último batch si el estado no es 9 y prev_estado no es None
+  if estado != 9 and prev_estado is not None:
+    print(f"{palabra}\t{dict_estado[prev_estado]}")
+  print()
+
+# Función principal para el análisis léxico de un archivo
+def lexerAritmetico(archivo):
+    with open(archivo, 'r') as file:
+        # Itera sobre cada línea en el archivo
+        for line in file:
+            line = line.strip()
+            if line != '':
+              # Ejecuta el autómata para cada línea no vacía
+              correr_automaton(line)
+
+lexerAritmetico('expresiones.txt')

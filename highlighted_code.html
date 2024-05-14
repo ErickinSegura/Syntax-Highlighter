@@ -6,115 +6,151 @@
     <title>Resaltado de sintaxis en Python</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
-        * {background-color: rgb(41, 38, 46); font-family: "JetBrains Mono", monospace; color: white;}
-        .keyword { color: rgb(212, 93, 93); }
-        .number { color: rgb(235, 122, 255); }
-        .stringS { color: rgb(255, 251, 0); }
-        .stringM { color: rgb(255, 251, 0); }
-        .stringD { color: rgb(255, 251, 0); }
-        .comment { color: gray; }
+        * {background-color: rgb(30, 30, 46); font-family: "JetBrains Mono", monospace; color: white;}
+        .keyword { color: rgb(243, 139, 168); }
+        .number { color: rgb(203, 166, 247); }
+        .stringS { color: rgb(249, 226, 175); }
+        .stringM { color: rgb(249, 226, 175); }
+        .stringD { color: rgb(249, 226, 175); }
+        .comment { color: rgb(166, 173, 200); }
         .identifier { color: rgb(255, 255, 255); }
-        .operator { color: rgb(212, 93, 93); }
-        .variable {color: #6f35f8;}
-        .function {color: #00ff62;}
+        .operator { color: rgb(243, 139, 168); }
+        .variable {color: rgb(137, 180, 250);}
+        .function {color: rgb(166, 227, 161);}
     </style>
 </head>
 <body>
-    <pre><span class="keyword">import</span> time
-<span class="keyword">import</span> re
-<span class="keyword">import</span> keyword
+    <pre>d <span class="operator">=</span> <span class="operator">[</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">5</span>, <span class="stringD">'digito'</span>: <span class="number">1</span>, <span class="stringD">'simbolo'</span>: <span class="number">8</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">2</span>, <span class="stringD">'E'</span>: <span class="number">5</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado 0   0       Entrada</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">1</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">2</span>, <span class="stringD">'E'</span>: <span class="number">9</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado N1         1       Entero</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">2</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">3</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado N2         2       Real</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">4</span>, <span class="stringD">'simbolo'</span>: <span class="number">10</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">9</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado N3         3</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">4</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">9</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado N4         4       Real</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">5</span>, <span class="stringD">'digito'</span>: <span class="number">5</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">5</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">5</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado V1         5       Variable</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">9</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">7</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">9</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado C1         6       Division</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">7</span>, <span class="stringD">'digito'</span>: <span class="number">7</span>, <span class="stringD">'simbolo'</span>: <span class="number">7</span>, <span class="stringD">'comentario'</span>: <span class="number">7</span>, <span class="stringD">'_'</span>: <span class="number">7</span>, <span class="stringD">'.'</span>: <span class="number">7</span>, <span class="stringD">'E'</span>: <span class="number">7</span>, <span class="stringS">"espacio"</span>: <span class="number">7</span><span class="operator">}</span>,  <span class="comment"># Estado C2         7       Comentario</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">9</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">9</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado S1         8       Simbolo</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">9</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">9</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">9</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado Null       9</span>
+        <span class="operator">{</span><span class="stringD">'letra'</span>: <span class="number">9</span>, <span class="stringD">'digito'</span>: <span class="number">10</span>, <span class="stringD">'simbolo'</span>: <span class="number">9</span>, <span class="stringD">'comentario'</span>: <span class="number">6</span>, <span class="stringD">'_'</span>: <span class="number">9</span>, <span class="stringD">'.'</span>: <span class="number">9</span>, <span class="stringD">'E'</span>: <span class="number">9</span>, <span class="stringS">"espacio"</span>: <span class="number">9</span><span class="operator">}</span>,  <span class="comment"># Estado real       10      Real</span>
+        <span class="operator">]</span>
 
-inicio <span class="operator">=</span> time.<span class="function">time</span><span class="operator">(</span><span class="operator">)</span>
-
-
-reserved_words <span class="operator">=</span> keyword.kwlist
-variables <span class="operator">=</span> [<span class="stringD">'float'</span>, <span class="stringD">'int'</span>, <span class="stringD">'double'</span>, <span class="stringD">'string'</span>]
-
-tokens_regex <span class="operator">=</span> [
-    <span class="operator">(</span>r<span class="stringD">'\b(?:{})\b'</span>.<span class="function">format</span><span class="operator">(</span><span class="stringD">'|'</span>.<span class="function">join</span><span class="operator">(</span>variables<span class="operator">)</span><span class="operator">)</span>, <span class="stringD">'variable'</span><span class="operator">)</span>,  # Variables
-    <span class="operator">(</span>r<span class="stringD">'\b\w+\('</span>, <span class="stringD">'function'</span><span class="operator">)</span>,  # Funciones sin argumentos
-    <span class="operator">(</span>r<span class="stringD">'"[^"\n]*"'</span>, <span class="stringD">'stringS'</span><span class="operator">)</span>,
-    <span class="operator">(</span>r<span class="stringS">"'[^'\n]*'"</span>, <span class="stringD">'stringD'</span><span class="operator">)</span>,
-    <span class="operator">(</span>r<span class="stringS">""</span><span class="stringS">"'[^'\n]*'"</span><span class="stringS">""</span>, <span class="stringD">'stringM'</span><span class="operator">)</span>,
-    <span class="operator">(</span>r<span class="stringD">'\b(?:{})\b'</span>.<span class="function">format</span><span class="operator">(</span><span class="stringD">'|'</span>.<span class="function">join</span><span class="operator">(</span>reserved_words<span class="operator">)</span><span class="operator">)</span>, <span class="stringD">'keyword'</span><span class="operator">)</span>,  # Palabras clave
-    <span class="operator">(</span>r<span class="stringD">'\b\d+(\.\d*)?([eE][+-]?\d+)?\b'</span>, <span class="stringD">'number'</span><span class="operator">)</span>,  # Números
-    <span class="operator">(</span>r<span class="stringD">'#[^\n]*'</span>, <span class="stringD">'comment'</span><span class="operator">)</span>,  # Comentarios
-    <span class="operator">(</span>r<span class="stringD">'[+\-*/%<>=&|^~(){}]'</span>, <span class="stringD">'operator'</span><span class="operator">)</span>,  # Operadores
-]
-
-# Función para resaltar los tokens en HTML<span class="operator">+</span>CSS
-<span class="keyword">def</span> <span class="function">highlight_tokens</span><span class="operator">(</span>code<span class="operator">)</span>:
-    # Inicializamos el código resaltado como una cadena vacía
-    highlighted_code <span class="operator">=</span> <span class="stringD">''</span>
-    # Inicializamos el índice de inicio <span class="keyword">del</span> próximo token
-    start_index <span class="operator">=</span> <span class="number">0</span>
-    # Buscamos coincidencias con todas las expresiones regulares en tokens_regex
-    <span class="keyword">for</span> match <span class="keyword">in</span> re.<span class="function">finditer</span><span class="operator">(</span><span class="stringD">'|'</span>.<span class="function">join</span><span class="operator">(</span>f<span class="stringD">'({pattern})'</span> <span class="keyword">for</span> pattern, _ <span class="keyword">in</span> tokens_regex<span class="operator">)</span>, code<span class="operator">)</span>:
-        # Extraemos el token y su posición en el código
-        token <span class="operator">=</span> match.<span class="function">group</span><span class="operator">(</span><span class="number">0</span><span class="operator">)</span>
-        token_start <span class="operator">=</span> match.<span class="function">start</span><span class="operator">(</span><span class="operator">)</span>
-        token_end <span class="operator">=</span> match.<span class="function">end</span><span class="operator">(</span><span class="operator">)</span>
-        # Agregamos el texto no resaltado que precede al token
-        highlighted_code <span class="operator">+</span><span class="operator">=</span> code[start_index:token_start]
-        # Buscamos la clase correspondiente al token en tokens_regex
-        <span class="keyword">for</span> token_regex, token_class <span class="keyword">in</span> tokens_regex:
-            <span class="keyword">if</span> re.<span class="function">match</span><span class="operator">(</span>token_regex, token<span class="operator">)</span>:
-                # Aplicamos la clase correspondiente al token
-                <span class="keyword">if</span> <span class="operator">(</span>token_class <span class="operator">=</span><span class="operator">=</span> <span class="stringD">'function'</span><span class="operator">)</span>:
-                    highlighted_code <span class="operator">+</span><span class="operator">=</span> f<span class="stringD">'<span class="{token_class}">{token[:-1]}</span>'</span>
-                    highlighted_code <span class="operator">+</span><span class="operator">=</span> f<span class="stringD">'<span class="operator">(</span>'</span>
-                    <span class="keyword">break</span>
-
-                highlighted_code <span class="operator">+</span><span class="operator">=</span> f<span class="stringD">'<span class="{token_class}">{token}</span>'</span>
-                <span class="keyword">break</span>
-            
-        # Actualizamos el índice de inicio <span class="keyword">del</span> próximo token
-        start_index <span class="operator">=</span> token_end
-    # Agregamos el texto no resaltado que sigue al último token
-    highlighted_code <span class="operator">+</span><span class="operator">=</span> code[start_index:]
-    <span class="keyword">return</span> highlighted_code
+alfabeto <span class="operator">=</span> <span class="operator">{</span>
+    <span class="stringD">'letra'</span>: <span class="stringD">'abcdfghijklmnñopqrstuvwxyzABCDFGHIJKLMNÑOPQRSTUVWXYZ'</span>,
+    <span class="stringD">'digito'</span>: <span class="stringD">'0123456789'</span>,
+    <span class="stringD">'simbolo'</span>: <span class="stringD">'+-*=()^%'</span>,
+    <span class="stringD">'comentario'</span>: <span class="stringD">'//'</span>,
+    <span class="stringD">'_'</span>: <span class="stringD">'_'</span>,
+    <span class="stringD">'.'</span>: <span class="stringD">'.'</span>,
+    <span class="stringD">'E'</span>: <span class="stringD">'Ee'</span>,
+    <span class="stringD">'espacio'</span>: <span class="stringD">' '</span>,
+<span class="operator">}</span>
 
 
-# Lee el archivo fuente
-<span class="keyword">with</span> <span class="function">open</span><span class="operator">(</span><span class="stringS">"fuente.py"</span>, <span class="stringS">"r"</span><span class="operator">)</span> <span class="keyword">as</span> file:
-    source_code <span class="operator">=</span> file.<span class="function">read</span><span class="operator">(</span><span class="operator">)</span>
+dict_estado <span class="operator">=</span> <span class="operator">{</span>
+    <span class="number">0</span>: <span class="stringD">'Entrada'</span>,
+    <span class="number">1</span>: <span class="stringD">'Entero'</span>,
+    <span class="number">2</span>: <span class="stringD">'Real'</span>,
+    <span class="number">3</span>: <span class="stringD">'Real'</span>,
+    <span class="number">4</span>: <span class="stringD">'Real'</span>,
+    <span class="number">5</span>: <span class="stringD">'Variable'</span>,
+    <span class="number">6</span>: <span class="stringD">'Division'</span>,
+    <span class="number">7</span>: <span class="stringD">'Comentario'</span>,
+    <span class="number">8</span>: <span class="stringD">'Simbolo'</span>,
+    <span class="number">9</span>: <span class="stringD">'Nulo'</span>,
+    <span class="number">10</span>: <span class="stringD">'Real'</span>
+<span class="operator">}</span>
 
-# Resalta los tokens en HTML<span class="operator">+</span>CSS
-highlighted_code <span class="operator">=</span> <span class="function">highlight_tokens</span><span class="operator">(</span>source_code<span class="operator">)</span>
 
-# Genera el código HTML completo
-html_code <span class="operator">=</span> f<span class="stringS">""</span>"<span class="operator"><</span>!DOCTYPE html<span class="operator">></span>
-<span class="operator"><</span>html lang<span class="operator">=</span><span class="stringS">"es"</span><span class="operator">></span>
-<span class="operator"><</span>head<span class="operator">></span>
-    <span class="operator"><</span>meta charset<span class="operator">=</span><span class="stringS">"UTF-8"</span><span class="operator">></span>
-    <span class="operator"><</span>meta name<span class="operator">=</span><span class="stringS">"viewport"</span> content<span class="operator">=</span><span class="stringS">"width=device-width, initial-scale=1.0"</span><span class="operator">></span>
-    <span class="operator"><</span>title<span class="operator">></span>Resaltado de sintaxis en Python<span class="operator"><</span><span class="operator">/</span>title<span class="operator">></span>
-    <span class="operator"><</span>style<span class="operator">></span>
-        @<span class="keyword">import</span> <span class="function">url</span><span class="operator">(</span><span class="stringD">'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap'</span><span class="operator">)</span>;
-        <span class="operator">*</span> <span class="operator">{</span><span class="operator">{</span>background<span class="operator">-</span>color: <span class="function">rgb</span><span class="operator">(</span><span class="number">41</span>, <span class="number">38</span>, <span class="number">46</span><span class="operator">)</span>; font<span class="operator">-</span>family: <span class="stringS">"JetBrains Mono"</span>, monospace; color: white;<span class="operator">}</span><span class="operator">}</span>
-        .keyword <span class="operator">{</span><span class="operator">{</span> color: <span class="function">rgb</span><span class="operator">(</span><span class="number">212</span>, <span class="number">93</span>, <span class="number">93</span><span class="operator">)</span>; <span class="operator">}</span><span class="operator">}</span>
-        .number <span class="operator">{</span><span class="operator">{</span> color: <span class="function">rgb</span><span class="operator">(</span><span class="number">235</span>, <span class="number">122</span>, <span class="number">255</span><span class="operator">)</span>; <span class="operator">}</span><span class="operator">}</span>
-        .stringS <span class="operator">{</span><span class="operator">{</span> color: <span class="function">rgb</span><span class="operator">(</span><span class="number">255</span>, <span class="number">251</span>, <span class="number">0</span><span class="operator">)</span>; <span class="operator">}</span><span class="operator">}</span>
-        .stringM <span class="operator">{</span><span class="operator">{</span> color: <span class="function">rgb</span><span class="operator">(</span><span class="number">255</span>, <span class="number">251</span>, <span class="number">0</span><span class="operator">)</span>; <span class="operator">}</span><span class="operator">}</span>
-        .stringD <span class="operator">{</span><span class="operator">{</span> color: <span class="function">rgb</span><span class="operator">(</span><span class="number">255</span>, <span class="number">251</span>, <span class="number">0</span><span class="operator">)</span>; <span class="operator">}</span><span class="operator">}</span>
-        .comment <span class="operator">{</span><span class="operator">{</span> color: gray; <span class="operator">}</span><span class="operator">}</span>
-        .identifier <span class="operator">{</span><span class="operator">{</span> color: <span class="function">rgb</span><span class="operator">(</span><span class="number">255</span>, <span class="number">255</span>, <span class="number">255</span><span class="operator">)</span>; <span class="operator">}</span><span class="operator">}</span>
-        .operator <span class="operator">{</span><span class="operator">{</span> color: <span class="function">rgb</span><span class="operator">(</span><span class="number">212</span>, <span class="number">93</span>, <span class="number">93</span><span class="operator">)</span>; <span class="operator">}</span><span class="operator">}</span>
-        .variable <span class="operator">{</span><span class="operator">{</span>color: #6f35f8;<span class="operator">}</span><span class="operator">}</span>
-        .function <span class="operator">{</span><span class="operator">{</span>color: #00ff62;<span class="operator">}</span><span class="operator">}</span>
-    <span class="operator"><</span><span class="operator">/</span>style<span class="operator">></span>
-<span class="operator"><</span><span class="operator">/</span>head<span class="operator">></span>
-<span class="operator"><</span>body<span class="operator">></span>
-    <span class="operator"><</span>pre<span class="operator">></span><span class="operator">{</span>highlighted_code<span class="operator">}</span><span class="operator"><</span><span class="operator">/</span>pre<span class="operator">></span>
-<span class="operator"><</span><span class="operator">/</span>body<span class="operator">></span>
-<span class="operator"><</span><span class="operator">/</span>html<span class="operator">></span><span class="stringS">""</span>"
+dict_simbolo <span class="operator">=</span> <span class="operator">{</span>
+    <span class="stringD">'+'</span>: <span class="stringD">'Suma'</span>,
+    <span class="stringD">'-'</span>: <span class="stringD">'Resta'</span>,
+    <span class="stringD">'*'</span>: <span class="stringD">'Multiplicacion'</span>,
+    <span class="stringD">'='</span>: <span class="stringD">'Asignacion'</span>,
+    <span class="stringD">'('</span>: <span class="stringD">'Parentesis que abre'</span>,
+    <span class="stringD">')'</span>: <span class="stringD">'Parentesis que cierra'</span>,
+    <span class="stringD">'^'</span>: <span class="stringD">'Potencia'</span>,
+    <span class="stringD">'%'</span>: <span class="stringD">'Porcentaje'</span>
+<span class="operator">}</span>
 
-# Escribe el código HTML en un archivo
-<span class="keyword">with</span> <span class="function">open</span><span class="operator">(</span><span class="stringS">"highlighted_code.html"</span>, <span class="stringS">"w"</span><span class="operator">)</span> <span class="keyword">as</span> file:
-    file.<span class="function">write</span><span class="operator">(</span>html_code<span class="operator">)</span>
+<span class="comment"># Función para obtener el estado de un token en el autómata</span>
+<span class="keyword">def</span> <span class="function">dame_estado</span><span class="operator">(</span>token, prev_estado<span class="operator">=</span><span class="number">0</span><span class="operator">)</span>:
+  <span class="comment"># Busca el token en el alfabeto y devuelve el estado correspondiente</span>
+  <span class="keyword">for</span> categoria, conjunto_caracteres <span class="keyword">in</span> alfabeto.<span class="function">items</span><span class="operator">(</span><span class="operator">)</span>:
+      <span class="keyword">if</span> token <span class="keyword">in</span> conjunto_caracteres:
+          llave <span class="operator">=</span> categoria
+          <span class="keyword">return</span> d<span class="operator">[</span>prev_estado<span class="operator">]</span><span class="operator">[</span>llave<span class="operator">]</span>
 
-fin <span class="operator">=</span> time.<span class="function">time</span><span class="operator">(</span><span class="operator">)</span>
+  <span class="comment"># Imprime un mensaje si el token no se encuentra en el alfabeto</span>
+  <span class="function">print</span><span class="operator">(</span><span class="variable">f</span><span class="stringS">"{token}\tNulo"</span><span class="operator">)</span>
 
-<span class="function">print</span><span class="operator">(</span>f<span class="stringS">"Tiempo de ejecución: {(fin-inicio):.6f} segundos"</span><span class="operator">)</span></pre>
+<span class="comment"># Función para verificar si un estado representa un dígito</span>
+<span class="keyword">def</span> <span class="function">isDigit</span><span class="operator">(</span>prev_estado, estado<span class="operator">)</span>:
+  <span class="comment"># Verifica si el estado actual o el estado previo corresponden a un número real</span>
+  <span class="keyword">if</span> <span class="operator">(</span>prev_estado<span class="operator">=</span><span class="operator">=</span><span class="number">1</span><span class="operator">)</span> <span class="keyword">and</span> <span class="operator">(</span>dict_estado<span class="operator">[</span>estado<span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> <span class="stringD">'Real'</span><span class="operator">)</span>:
+    <span class="keyword">return</span> <span class="keyword">True</span>
+  <span class="keyword">if</span> <span class="operator">(</span>estado<span class="operator">=</span><span class="operator">=</span><span class="number">1</span><span class="operator">)</span> <span class="keyword">and</span> <span class="operator">(</span>dict_estado<span class="operator">[</span>prev_estado<span class="operator">]</span><span class="operator">=</span><span class="operator">=</span><span class="stringD">'Real'</span><span class="operator">)</span>:
+    <span class="keyword">return</span> <span class="keyword">True</span>
+  <span class="keyword">return</span> <span class="keyword">False</span>
+
+<span class="comment"># Función para ejecutar el autómata en una línea de texto</span>
+<span class="keyword">def</span> <span class="function">correr_automaton</span><span class="operator">(</span>line<span class="operator">)</span>:
+  palabra <span class="operator">=</span> <span class="stringD">''</span>
+  prev_estado <span class="operator">=</span> <span class="number">0</span>
+  estado <span class="operator">=</span> <span class="keyword">None</span>
+  <span class="comment"># Itera sobre cada token en la línea</span>
+  <span class="keyword">for</span> token <span class="keyword">in</span> line:
+    estado <span class="operator">=</span> <span class="function">dame_estado</span><span class="operator">(</span>token, prev_estado<span class="operator">)</span>
+    <span class="keyword">if</span> estado <span class="operator">=</span><span class="operator">=</span> <span class="number">9</span>:
+      estado <span class="operator">=</span> <span class="function">dame_estado</span><span class="operator">(</span>token<span class="operator">)</span>
+
+    <span class="comment"># Concatena caracteres si el estado no cambia o si el estado anterior es 0</span>
+    <span class="keyword">if</span> <span class="operator">(</span>prev_estado <span class="operator">=</span><span class="operator">=</span> <span class="number">0</span><span class="operator">)</span> <span class="keyword">or</span> <span class="operator">(</span>dict_estado<span class="operator">[</span>estado<span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> dict_estado<span class="operator">[</span>prev_estado<span class="operator">]</span><span class="operator">)</span>:
+      palabra <span class="operator">+</span><span class="operator">=</span> token
+      prev_estado <span class="operator">=</span> estado
+    <span class="keyword">elif</span> estado !<span class="operator">=</span> <span class="number">9</span>:
+      <span class="comment"># Maneja casos específicos de transición de estado</span>
+      <span class="keyword">if</span> prev_estado <span class="operator">=</span><span class="operator">=</span> <span class="number">6</span> <span class="keyword">and</span> estado <span class="operator">=</span><span class="operator">=</span> <span class="number">7</span>:
+        palabra <span class="operator">+</span><span class="operator">=</span> token
+        prev_estado <span class="operator">=</span> <span class="number">7</span>
+        <span class="keyword">continue</span>
+      <span class="keyword">if</span> prev_estado <span class="operator">=</span><span class="operator">=</span> <span class="number">8</span>:
+        <span class="keyword">for</span> char <span class="keyword">in</span> palabra:
+          <span class="keyword">if</span> char !<span class="operator">=</span> <span class="stringD">'-'</span>:
+             <span class="function">print</span><span class="operator">(</span><span class="variable">f</span><span class="stringS">"{char}\t{dict_simbolo[char]}"</span><span class="operator">)</span>
+             <span class="keyword">continue</span>
+        <span class="keyword">if</span> palabra<span class="operator">[</span><span class="operator">-</span><span class="number">1</span><span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> <span class="stringD">'-'</span>:
+          <span class="keyword">if</span> dict_estado<span class="operator">[</span>estado<span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> <span class="stringD">'Real'</span> <span class="keyword">or</span> dict_estado<span class="operator">[</span>estado<span class="operator">]</span> <span class="operator">=</span><span class="operator">=</span> <span class="stringD">'Entero'</span>:
+            palabra <span class="operator">=</span> <span class="stringD">'-'</span> <span class="operator">+</span> token
+            prev_estado <span class="operator">=</span> <span class="number">4</span>
+          <span class="keyword">else</span>:
+            <span class="function">print</span><span class="operator">(</span><span class="variable">f</span><span class="stringS">"{palabra[-1]}\t{dict_simbolo[palabra[-1]]}"</span><span class="operator">)</span>
+            palabra <span class="operator">=</span> token
+            prev_estado <span class="operator">=</span> estado
+          <span class="keyword">continue</span>
+      <span class="keyword">elif</span> <span class="function">isDigit</span><span class="operator">(</span>prev_estado, estado<span class="operator">)</span>:
+        prev_estado <span class="operator">=</span> <span class="number">2</span>
+        palabra <span class="operator">+</span><span class="operator">=</span> token
+        <span class="keyword">continue</span>
+      <span class="keyword">else</span>:
+        <span class="function">print</span><span class="operator">(</span><span class="variable">f</span><span class="stringS">"{palabra}\t{dict_estado[prev_estado]}"</span><span class="operator">)</span>
+      palabra <span class="operator">=</span> token
+      prev_estado <span class="operator">=</span> estado
+
+  <span class="comment"># Imprime el último batch si el estado no es 9 y prev_estado no es None</span>
+  <span class="keyword">if</span> estado !<span class="operator">=</span> <span class="number">9</span> <span class="keyword">and</span> prev_estado <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:
+    <span class="function">print</span><span class="operator">(</span><span class="variable">f</span><span class="stringS">"{palabra}\t{dict_estado[prev_estado]}"</span><span class="operator">)</span>
+  <span class="function">print</span><span class="operator">(</span><span class="operator">)</span>
+
+<span class="comment"># Función principal para el análisis léxico de un archivo</span>
+<span class="keyword">def</span> <span class="function">lexerAritmetico</span><span class="operator">(</span>archivo<span class="operator">)</span>:
+    <span class="keyword">with</span> <span class="function">open</span><span class="operator">(</span>archivo, <span class="stringD">'r'</span><span class="operator">)</span> <span class="keyword">as</span> file:
+        <span class="comment"># Itera sobre cada línea en el archivo</span>
+        <span class="keyword">for</span> line <span class="keyword">in</span> file:
+            line <span class="operator">=</span> line.<span class="function">strip</span><span class="operator">(</span><span class="operator">)</span>
+            <span class="keyword">if</span> line !<span class="operator">=</span> <span class="stringD">''</span>:
+              <span class="comment"># Ejecuta el autómata para cada línea no vacía</span>
+              <span class="function">correr_automaton</span><span class="operator">(</span>line<span class="operator">)</span>
+
+<span class="function">lexerAritmetico</span><span class="operator">(</span><span class="stringD">'expresiones.txt'</span><span class="operator">)</span></pre>
 </body>
 </html>
